@@ -20,8 +20,8 @@ Follow the steps below to set up and run the backend on your local machine.
 ### 1. Clone the Repository (if applicable)
 
 ```bash
-git clone https://github.com/loarsaw/python-scrapper.git
-cd cd python-scrapper && cd backend
+git clone https://github.com/loarsaw/scrapper-python scrapper
+cd cd scrapper && cd backend
 python -m venv .venv
 # For winrddows
 .venv\Scripts\activate
