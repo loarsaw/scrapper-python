@@ -34,4 +34,8 @@ uvicorn app.main:app --reload
 
 ```
 
+[Open IN Browser](http://127.0.0.1:8000/api/projects)
+Link : http://127.0.0.1:8000/api/projects
+
+
 
