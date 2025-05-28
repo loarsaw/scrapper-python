@@ -552,48 +552,7 @@ class RERAScraperController:
             logger.error(f"Error extracting promoter details: {e}")
         
         return promoter_info
-    
-    def _extract_promoter_content(self) -> Dict:
-        """Extract promoter content from card-body elements"""
-        promoter_data = {}
-        
-        try:
-            promoter_selectors = [".promoter", "div.promoter", ".card-body"]
-            
-            promoter_section = None
-            for selector in promoter_selectors:
-                try:
-                    promoter_section = self.driver.find_element(By.CSS_SELECTOR, selector)
-                    break
-                except:
-                    continue
-            
-            if promoter_section:
-                card_bodies = promoter_section.find_elements(By.CSS_SELECTOR, ".card-body")
-                
-                for i, card_body in enumerate(card_bodies):
-                    try:
-                        card_text = card_body.text.strip()
-                        if card_text:
-                            promoter_data[f'promoter_card_{i+1}'] = card_text
-                        
-                        
-                        lines = card_text.split('\n')
-                        for line in lines:
-                            line = line.strip()
-                            if ':' in line and len(line.split(':')) == 2:
-                                key, value = line.split(':', 1)
-                                clean_key = f"promoter_{key.strip().lower().replace(' ', '_')}"
-                                promoter_data[clean_key] = value.strip()
-                                
-                    except Exception as e:
-                        logger.error(f"Error extracting from card body {i+1}: {e}")
-                        continue
-                        
-        except Exception as e:
-            logger.error(f"Error extracting promoter content: {e}")
-        
-        return promoter_data
+
     
     def _extract_modal_info(self) -> Dict:
         """Extract information from modal/popup"""
