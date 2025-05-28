@@ -546,13 +546,57 @@ class RERAScraperController:
                 time.sleep(3)
             
             
-            promoter_info = self._extract_promoter_content()
+            promoter_info = self.promoter_content()
                 
         except Exception as e:
             logger.error(f"Error extracting promoter details: {e}")
         
         return promoter_info
+    
+    def promoter_content(self) -> Dict:
+        promoter_data = {}
 
+        try:
+            promoter_selectors = [".promoter", "div.promoter", ".card-body"]
+            promoter_section = None
+
+            for selector in promoter_selectors:
+                try:
+                    promoter_section = self.driver.find_element(By.CSS_SELECTOR, selector)
+                    break
+                except:
+                    continue
+
+            if promoter_section:
+                card_bodies = promoter_section.find_elements(By.CSS_SELECTOR, ".card-body")
+
+                for i, card_body in enumerate(card_bodies):
+                    try:
+                        card_text = card_body.text.strip()
+                        if card_text:
+                            promoter_data[f'promoter_card_{i+1}'] = card_text
+
+                        paragraphs = card_body.find_elements(By.TAG_NAME, "p")
+                        for para in paragraphs:
+                            try:
+                                full_text = para.text.strip()
+                                strong_el = para.find_element(By.TAG_NAME, "strong")
+                                value = strong_el.text.strip()
+
+                                key_only = full_text.replace(value, "").replace(":", "").strip()
+
+                                clean_key = f"promoter_{key_only.lower().replace(' ', '_')}"
+                                promoter_data[clean_key] = value
+                            except Exception as e:
+                                continue
+                    except Exception as e:
+                        logger.error(f"Error extracting from card body {i+1}: {e}")
+                        continue
+
+        except Exception as e:
+            logger.error(f"Error extracting promoter content: {e}")
+
+        return promoter_data
     
     def _extract_modal_info(self) -> Dict:
         """Extract information from modal/popup"""
